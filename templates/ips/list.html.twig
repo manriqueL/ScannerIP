@@ -42,7 +42,7 @@
             }, 1000);
         {% else %}
             var timerElement = document.getElementById('timer-{{ ip.id }}');
-            timerElement.textContent = 'N/A';
+            timerElement.textContent = '00:h 00:m 00:s';
         {% endif %}
     {% endfor %}
 </script>
