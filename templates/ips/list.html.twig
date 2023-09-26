@@ -1,33 +1,77 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'base/index.html.twig' %}
 {% block title %}Hello IpController!{% endblock %}
+{% block rowMain %}
+    {# templates/ip/list.html.twig #}
+    <h1 class="h3 mb-0 text-dark"><b>Actividad de IPs</b></h1>
 
-{% block body %}
-{# templates/ip/list.html.twig #}
-<h1 class="text-center">LISTA DE IPs</h1>
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Dirección IP</th>
-                <th>Estado</th>
-                <th>Última conexión</th>
-                <th>Tiempo de Inactividad</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for ip in ips %}
+    <div class="table-responsive" style="text-align: center">
+        <div class="table-responsive" style="text-align: center">
+            <div class="d-flex justify-content-end mb-3">
+                <a class="btn btn-sm btn-success shadow-sm me-2">
+                    <i id="scan-button" class="fa fa-refresh" aria-hidden="true"></i> &nbsp; Actualizar
+            
+                </a>
+            </div>
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>{{ ip.ipAddress }}</td>
-                    <td>{% if ip.isActive %}Activa{% else %}Inactiva{% endif %}</td>
-                    <td>{% if ip.isActive != true %}{{ ip.lastDeactivatedAt|date('Y-m-d H:i:s') }}{% else %}Activa{% endif %}</td>
-                    <td id="timer-{{ ip.id }}"></td>
+                    <th>Dirección IP</th>
+                    <th>Estado</th>
+                    <th>Última conexión</th>
+                    <th>Tiempo de Inactividad</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-<script>
+            </thead>
+            <tbody>
+                {% for ip in ips %}
+                    {% if ip.isActive != true %}
+                        <tr>
+                            <td>{{ ip.ipAddress }}</td>
+                            <td style="color:red;">{% if ip.isActive != true %}Inactiva     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>{% endif %}</td>
+                            <td>{% if ip.isActive != true %}{{ ip.lastDeactivatedAt|date('d/m/Y H:i:s') }}{% endif %}</td>
+                            <td id="timer-{{ ip.id }}"></td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                {% for ip in ips %}
+                    {% if ip.isActive %}
+                        <tr>
+                            <td>{{ ip.ipAddress }}</td>
+                            <td style="color: #008a00;">{% if ip.isActive %}Activa     <i class="fa fa-wifi"></i>{% endif %}</td>
+                            <td>{% if ip.isActive %} Activa {% endif %}</td>
+                            <td id="timer-{{ ip.id }}"></td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.getElementById('scan-button').addEventListener('click', function () {
+            fetch('/ips', {
+                method: 'POST'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(result => {
+                        const ipAddress = result.ipAddress;
+                        const isActive = result.isActive;
+                        // Actualiza los elementos de la página con los datos del resultado del escaneo
+                        const ipAddressElement = document.getElementById('ip-address-' + ipAddress);
+                        const isActiveElement = document.getElementById('is-active-' + ipAddress);
+                        const lastDeactivatedAtElement = document.getElementById('last-deactivated-at-' + ipAddress);
+                        const timerElement = document.getElementById('timer-' + ipAddress);
+
+                        ipAddressElement.textContent = ipAddress;
+                        isActiveElement.textContent = isActive ? 'Activa' : 'Inactiva';
+                        lastDeactivatedAtElement.textContent = isActive ? '' : result.lastDeactivatedAt;
+                        timerElement.textContent = isActive ? '' : result.timer;
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+
     {% for ip in ips %}
         {% if not ip.isActive and ip.lastDeactivatedAt %}
             var timer{{ ip.id }} = setInterval(function() {

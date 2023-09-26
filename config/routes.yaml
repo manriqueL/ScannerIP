@@ -6,3 +6,7 @@ controllers:
 ipsscan:
     path: /ipsscan
     controller: App\Controller\IPScanController::scanIPs
+
+admin_ips_list:
+    path: /admin/ips
+    controller: App\Controller\IpController::list
