@@ -2,11 +2,17 @@ controllers:
     resource: '../src/Controller/'
     type: annotation
 
-
 ipsscan:
     path: /ipsscan
     controller: App\Controller\IPScanController::scanIPs
 
 admin_ips_list:
-    path: /admin/ips
+    path: /ips
     controller: App\Controller\IpController::list
+
+# config/routes.yaml
+actualizar_ips:
+    path: '/actualizar-ips'
+    controller: App\Controller\IpController::actualizar-ips # Reemplaza con la ruta adecuada y el controlador
+    methods: ['GET']
+

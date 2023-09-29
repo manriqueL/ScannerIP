@@ -6,7 +6,6 @@ namespace App\Service;
 use App\Entity\Ip;
 use App\Entity\ScanLog;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class IpScannerService
 {
@@ -20,12 +19,11 @@ class IpScannerService
     public function scanIps()
     {
         $ips = $this->entityManager->getRepository(Ip::class)->findAll();
-        $results = [];
         
         foreach ($ips as $ip) {
             $ipAddress = $ip->getIpAddress();
-            $result = shell_exec("ping -n 2 $ipAddress");
-            $isActive = strpos($result, "(0% loss)" ) !== false;
+            $result = shell_exec("ping -n 1 $ipAddress");
+            $isActive = strpos($result, "(0% loss)") !== false;
             
             if ($result === null) {
                 echo "Error executing ping command.";
@@ -54,15 +52,10 @@ class IpScannerService
             
             $this->entityManager->persist($ip);
 
-            $results[] = [
-                'ipAddress' => $ip->getIpAddress(),
-                'isActive' => $ip->getIsActive(),
-                // Add any other data you want to include in the JSON response
-            ];
         }
         
         $this->entityManager->flush();
 
-        return new JsonResponse($results);
+
     }
 }

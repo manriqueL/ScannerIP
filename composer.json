@@ -11,6 +11,7 @@
         "doctrine/doctrine-bundle": "^2",
         "doctrine/doctrine-migrations-bundle": "^2",
         "doctrine/orm": "^2",
+        "friendsofsymfony/jsrouting-bundle": "*",
         "knplabs/knp-paginator-bundle": "^5.2",
         "liip/imagine-bundle": "^2.3",
         "sensio/framework-extra-bundle": "^5.5",
@@ -32,9 +33,12 @@
         "symfony/yaml": "5.1.*",
         "symfonycasts/reset-password-bundle": "^1.1",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+        "hollodotme/fast-ping": "^2.0"
     },
+    "minimum-stability": "dev",
     "require-dev": {
+        
         "doctrine/doctrine-fixtures-bundle": "^3.3",
         "symfony/debug-bundle": "5.1.*",
         "symfony/maker-bundle": "^1.19",
