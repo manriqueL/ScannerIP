@@ -23,11 +23,13 @@
         {% block jsBottom %}{% endblock %}
         <script>
             /* Custom calendar for Bootstrap */
-            $('#calendar').datepicker({
-                autoclose: true,
-                todayHighlight: true,
-                format: "dd-mm-yyyy",
-            });
+        $('#calendar').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: "dd-mm-yyyy",
+        });
         </script>
     </body>
 </html>
+{% block javascript %} 
+{% endblock %}

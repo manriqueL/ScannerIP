@@ -1,0 +1,43 @@
+{% for ip in ips %}
+
+        {% if ip.isActive != true %}
+        <tr>
+            <td>{{ ip.ipAddress }}</td>
+            <td style = "color:red;">{% if ip.isActive != true %}Inactiva     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>{% endif %}</td>
+            <td>{% if ip.isActive != true %}{{ ip.lastDeactivatedAt|date('d/m/Y H:i:s') }}{% endif %}</td>
+            <td id="timer-{{ ip.id }}"></td>
+        </tr>
+            {% endif %}
+    {% endfor %}
+    {% for ip in ips %}
+    {% if ip.isActive %}
+        <tr>
+            <td>{{ ip.ipAddress }}</td>
+            <td style="color: #008a00;">{% if ip.isActive %}Activa  <i class="fa fa-wifi"></i>{% endif %}</td>
+            <td>{% if ip.isActive %} Activa {% endif %}</td>
+            <td id="timer-{{ ip.id }}"></td>
+        </tr>
+        {% endif %}
+<script>
+    {% for ip in ips %}
+        {% if not ip.isActive and ip.lastDeactivatedAt != false %}
+            (function() {
+                var timerElement = document.getElementById('timer-{{ ip.id }}');
+                var lastDeactivatedAt = new Date('{{ ip.lastDeactivatedAt|date('Y-m-d H:i:s') }}');
+                setInterval(function() {
+                    var now = new Date();
+                    var diff = Math.floor((now - lastDeactivatedAt) / 1000);
+                    var hours = Math.floor(diff / 3600);
+                    var minutes = Math.floor((diff % 3600) / 60);
+                    var seconds = diff % 60;
+                    timerElement.textContent = hours + 'h ' + minutes + 'm ' + seconds + 's';
+                }, 1000);
+            })();
+        {% else %}
+            var timerElement = document.getElementById('timer-{{ ip.id }}');
+            timerElement.textContent = '00:h 00:m 00:s';
+        {% endif %}
+    {% endfor %}
+</script>
+
+{% endfor %}

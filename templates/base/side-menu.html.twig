@@ -33,12 +33,11 @@
 
 {% if is_granted('VER_INICIO') %}
     {# Archivos #}
-    <li class="nav-item {{ currentPath in opciones ? 'active' : '' }}">
+    <li class="nav-item {{ currentPath in "{{ path('actualizar_ips') }}" ? 'active' : '' }}">
         {# <a class="nav-link collapsed" data-bs-toggle="collapse" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseTwo"> #}
         <a class="nav-link collapsed" href="{{ path('admin_ips_list') }}" aria-expanded="false" aria-controls="collapseTwo">
             <i class="fa fa-rss"></i>
-            <span>Actividad Ip</span>
-    
+           <span> Actividad Ip </span>
         </a>
 
     </li>

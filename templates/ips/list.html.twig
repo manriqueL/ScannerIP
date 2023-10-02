@@ -3,87 +3,14 @@
 {% block title %}Ip Scann{% endblock %}
 
 {% block rowMain %}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    // Manejar el clic en el botón de actualización
-    $('#update-button').click(function() {
-        $.ajax({
-    type: 'GET',
-    url: "{{ path('actualizar_ips') }}", // Reemplaza con la ruta adecuada y el controlador
-    dataType: 'json',
-    success: function(response) {
-        // Alerta para confirmar que la solicitud AJAX se completó con éxito
-        alert('La solicitud AJAX se completó con éxito.');
-        
-        // Resto del código para actualizar la tabla con los datos recibidos
-        // ...
-    },
-    error: function(error) {
-        console.error('Error al obtener los datos de IPs actualizados: ' + error.responseText);
-    }
-});
-
-    })
-
-</script>
-{# <script>
-    // Manejar el clic en el botón de actualización
-    $('#update-button').click(function() {
-        // Realizar una solicitud AJAX para obtener los datos actualizados de las IPs
-        $.ajax({
-            type: 'GET',
-            url: '{{ path('actualizar_ips') }}', // Reemplaza 'actualizar_ips' con la ruta de tu controlador Symfony
-            dataType: 'json',
-            success: function(response) {
-                // Limpiar la tabla
-                $('#ips-table tbody').empty();
-
-                // Iterar sobre los datos recibidos y actualizar la tabla
-                $.each(response, function(index, ip) {
-                    var row = '<tr>' +
-                        '<td>' + ip.ipAddress + '</td>' +
-                        '<td style="color: ' + (ip.isActive ? '#008a00' : 'red') + ';">' +
-                        (ip.isActive ? 'Activa <i class="fa fa-wifi"></i>' : 'Inactiva <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>') +
-                        '</td>' +
-                        '<td>' + (ip.isActive ? 'Activa' : ip.lastDeactivatedAt) + '</td>' +
-                        '<td id="timer-' + ip.id + '"></td>' +
-                        '</tr>';
-
-                    $('#ips-table tbody').append(row);
-
-                    // Iniciar el temporizador si la IP es inactiva
-                    if (!ip.isActive && ip.lastDeactivatedAt) {
-                        var timerElement = document.getElementById('timer-' + ip.id);
-                        var lastDeactivatedAt = new Date(ip.lastDeactivatedAt);
-                        setInterval(function() {
-                            var now = new Date();
-                            var diff = Math.floor((now - lastDeactivatedAt) / 1000);
-                            var hours = Math.floor(diff / 3600);
-                            var minutes = Math.floor((diff % 3600) / 60);
-                            var seconds = diff % 60;
-                            timerElement.textContent = hours + 'h ' + minutes + 'm ' + seconds + 's';
-                        }, 1000);
-                    }
-                });
-            },
-            error: function(error) {
-                console.error('Error al obtener los datos de IPs actualizados: ' + error.responseText);
-            }
-        });
-    });
-</script> #}
-
-{# templates/ip/list.html.twig #}
-<h1 class="h3 mb-0 text-dark"> <b>Lista de IPs</b> </h1>
 
 <div class="d-flex justify-content-end mb-3">
     <button id="update-button" class="btn btn-sm btn-primary shadow-sm me-2">
         <i class="fas fa-sync-alt fa-rotate-right"></i> &nbsp; Actualizar
     </button>
 </div>
-
 <div class="table-responsive" style="text-align: center">
-    <table class="table table-striped">
+    <table class="table table-striped" id="ips-table">
         <thead>
             <tr>
                 <th>Dirección IP</th>
@@ -93,49 +20,34 @@
             </tr>
         </thead>
         <tbody>
-            {% for ip in ips %}
-               {% if ip.isActive != true %}
-                <tr>
-                    <td>{{ ip.ipAddress }}</td>
-                    <td style = "color:red;">{% if ip.isActive != true %}Inactiva     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>{% endif %}</td>
-                    <td>{% if ip.isActive != true %}{{ ip.lastDeactivatedAt|date('d/m/Y H:i:s') }}{% endif %}</td>
-                    <td id="timer-{{ ip.id }}"></td>
-                </tr>
-                  {% endif %}
-            {% endfor %}
-            {% for ip in ips %}
-            {% if ip.isActive %}
-                <tr>
-                    <td>{{ ip.ipAddress }}</td>
-                    <td style="color: #008a00;">{% if ip.isActive %}Activa  <i class="fa fa-wifi"></i>{% endif %}</td>
-                    <td>{% if ip.isActive %} Activa {% endif %}</td>
-                    <td id="timer-{{ ip.id }}"></td>
-                </tr>
-                {% endif %}
-            {% endfor %}
-            
+            {% include 'ips/list_table.html.twig' %}
         </tbody>
+
     </table>
-    <script>
-    {% for ip in ips %}
-        {% if not ip.isActive and ip.lastDeactivatedAt %}
-            var timer{{ ip.id }} = setInterval(function() {
-                var timerElement = document.getElementById('timer-{{ ip.id }}');
-                var lastDeactivatedAt = new Date('{{ ip.lastDeactivatedAt|date('Y-m-d H:i:s') }}');
-                var now = new Date();
-                var diff = Math.floor((now - lastDeactivatedAt) / 1000);
-                var hours = Math.floor(diff / 3600);
-                var minutes = Math.floor((diff % 3600) / 60);
-                var seconds = diff % 60;
-                timerElement.textContent = hours + 'h ' + minutes + 'm ' + seconds + 's';
-            }, 1000);
-        {% else %}
-            var timerElement = document.getElementById('timer-{{ ip.id }}');
-            timerElement.textContent = '00:h 00:m 00:s';
-        {% endif %}
-    {% endfor %}
-</script>
 </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
 
 
+    $(document).ready(function() {
+
+
+    // Manejar el clic en el botón de actualización
+    $('#update-button').click(function() {
+        $.ajax({
+            type: 'GET',
+            url: "{{ path('actualizar_ips') }}",
+            dataType: 'html', // Cambiamos esto a 'html' para recibir una vista Twig
+            success: function(response) {
+                // Reemplazamos la tabla completa con la nueva tabla generada
+                $('#ips-table tbody').html(response);
+            },
+            error: function(error) {
+                console.error('Error al obtener los datos de IPs actualizados: ' + error.responseText);
+            }
+        });
+    });
+    });
+    
+</script>
 {% endblock %}

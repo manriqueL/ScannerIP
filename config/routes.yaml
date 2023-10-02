@@ -1,7 +1,6 @@
-controllers:
-    resource: '../src/Controller/'
-    type: annotation
+# config/routes.yaml
 
+# Define tus rutas personalizadas aquí
 ipsscan:
     path: /ipsscan
     controller: App\Controller\IPScanController::scanIPs
@@ -10,9 +9,8 @@ admin_ips_list:
     path: /ips
     controller: App\Controller\IpController::list
 
-# config/routes.yaml
+# Ruta para actualizar las IPs (GET)
 actualizar_ips:
-    path: '/actualizar-ips'
-    controller: App\Controller\IpController::actualizar-ips # Reemplaza con la ruta adecuada y el controlador
+    path: /actualizar-ips
+    controller: App\Controller\IpController::actualizarIps
     methods: ['GET']
-
