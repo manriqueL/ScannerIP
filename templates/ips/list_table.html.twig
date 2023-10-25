@@ -6,6 +6,7 @@
             <td style = "color:red;">{% if ip.isActive != true %}Inactiva     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>{% endif %}</td>
             <td>{% if ip.isActive != true %}{{ ip.lastDeactivatedAt|date('d/m/Y H:i:s') }}{% endif %}</td>
             <td id="timer-{{ ip.id }}"></td>
+
         </tr>
             {% endif %}
     {% endfor %}
@@ -16,6 +17,7 @@
             <td style="color: #008a00;">{% if ip.isActive %}Activa  <i class="fa fa-wifi"></i>{% endif %}</td>
             <td>{% if ip.isActive %} Activa {% endif %}</td>
             <td id="timer-{{ ip.id }}"></td>
+            
         </tr>
         {% endif %}
 <script>
